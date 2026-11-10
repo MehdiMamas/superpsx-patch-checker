@@ -16,4 +16,5 @@ Open `chrome://extensions`, enable Developer mode, Load unpacked, and select the
 
 ## Gotchas
 - `examples/` is gitignored.
-- No tests or CI in this repo.
+- CI (`.github/workflows/ci.yml`) checks JS and Python syntax and that the manifest and index are valid; on a `v*` tag it attaches the extension zip to that release (tag must match the manifest version).
+- Contributor docs: `CONTRIBUTING.md`, issue and PR templates in `.github/`.
