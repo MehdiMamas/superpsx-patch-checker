@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SuperPSX Patch Checker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Highlights game versions on SuperPSX that have patches available from the PS-Game-Patch repository.",
   "background": {
     "service_worker": "background.js"
