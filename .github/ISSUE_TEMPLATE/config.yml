@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Missing or wrong patch
+    url: https://github.com/illusionyy/PS-Game-Patch/issues
+    about: The patches themselves come from PS-Game-Patch. Ask there for new patches.
+  - name: Questions and ideas
+    url: https://github.com/MehdiMamas/superpsx-patch-checker/discussions
+    about: Ask and share in Discussions.

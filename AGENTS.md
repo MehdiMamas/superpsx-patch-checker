@@ -7,7 +7,7 @@ A Chrome extension (Manifest V3, plain JS, no build step) that highlights game v
 Open `chrome://extensions`, enable Developer mode, Load unpacked, and select the repo folder. Reload the extension after edits.
 
 ## Where things live
-- `content.js`: runs on SuperPSX pages, finds version tables, applies highlights.
+- `content.js`: runs on SuperPSX pages, finds version tables (old layout) and the Version stat card and Details list (current layout), applies highlights.
 - `background.js`: service worker that loads and serves the patch index.
 - `popup.html` / `popup.js`: toolbar popup showing the indexed count.
 - `patch_index.json`: generated; do not edit by hand.
@@ -16,4 +16,5 @@ Open `chrome://extensions`, enable Developer mode, Load unpacked, and select the
 
 ## Gotchas
 - `examples/` is gitignored.
-- No tests or CI in this repo.
+- CI (`.github/workflows/ci.yml`) checks JS and Python syntax and that the manifest and index are valid; on a `v*` tag it attaches the extension zip to that release (tag must match the manifest version).
+- Contributor docs: `CONTRIBUTING.md`, issue and PR templates in `.github/`.

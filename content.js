@@ -190,15 +190,102 @@ function highlightTable(entry, patches) {
   }
 }
 
+function findStatBlocks() {
+  const found = [];
+  for (const stat of document.querySelectorAll(".spsx-stat")) {
+    const key = stat.querySelector(".spsx-stat-k");
+    const value = stat.querySelector(".spsx-stat-v");
+    if (key && value && /^version/i.test(key.textContent.trim())) {
+      found.push({ container: stat, valueEl: value });
+    }
+  }
+  for (const dt of document.querySelectorAll("dl.spsx-specs dt")) {
+    if (!/^version/i.test(dt.textContent.trim())) continue;
+    const dd = dt.nextElementSibling;
+    if (dd && dd.tagName === "DD") found.push({ container: dd, valueEl: dd });
+  }
+  return found
+    .filter((b) => !b.container.dataset.spcDone)
+    .map((b) => ({
+      ...b,
+      titleIds: [
+        ...new Set(
+          (b.valueEl.textContent.match(TITLE_ID_REGEX) || []).map((id) =>
+            id.toUpperCase()
+          )
+        ),
+      ],
+    }))
+    .filter((b) => b.titleIds.length > 0);
+}
+
+function describePatches(titleId, patches) {
+  if (!patches || patches.length === 0) {
+    return { rank: 0, theme: RED, label: `${titleId} — NO PATCH` };
+  }
+  const fps = patches.filter(is60fps).length;
+  if (fps > 0) {
+    const others = patches.length - fps;
+    return {
+      rank: 2,
+      theme: CYAN,
+      label: `${titleId} — 60 FPS${others > 0 ? ` + ${others} more` : ""}`,
+    };
+  }
+  return {
+    rank: 1,
+    theme: GREEN,
+    label: `${titleId} — ${patches.length} PATCH${patches.length > 1 ? "ES" : ""}`,
+  };
+}
+
+function highlightStatBlock(block, index) {
+  const { container, valueEl, titleIds } = block;
+  container.dataset.spcDone = "1";
+  const results = titleIds.map((id) => describePatches(id, index[id]));
+  const best = results.reduce((a, b) => (b.rank > a.rank ? b : a));
+
+  Object.assign(container.style, {
+    border: `2px solid ${best.theme.border}`,
+    boxShadow: `0 0 12px ${best.theme.glow}`,
+    backgroundColor: best.theme.bg,
+    borderRadius: "8px",
+  });
+
+  for (const r of results) {
+    const pill = document.createElement("span");
+    pill.textContent = r.label;
+    Object.assign(pill.style, {
+      display: "inline-block",
+      margin: "4px 6px 0 0",
+      background: r.theme.border,
+      color: "#fff",
+      fontWeight: "bold",
+      fontSize: "11px",
+      lineHeight: "1.4",
+      padding: "2px 8px",
+      borderRadius: "4px",
+      letterSpacing: "0.5px",
+      whiteSpace: "nowrap",
+    });
+    valueEl.appendChild(document.createElement("br"));
+    valueEl.appendChild(pill);
+  }
+}
+
 async function run() {
   const versionTables = findVersionTables();
-  if (versionTables.length === 0) return;
+  const statBlocks = findStatBlocks();
+  if (versionTables.length === 0 && statBlocks.length === 0) return;
 
   const index = await chrome.runtime.sendMessage({ type: "GET_PATCH_INDEX" });
   if (!index) return;
 
   for (const entry of versionTables) {
     highlightTable(entry, index[entry.titleId] || null);
+  }
+  for (const block of statBlocks) {
+    highlightStatBlock(block, index);
   }
 }
 

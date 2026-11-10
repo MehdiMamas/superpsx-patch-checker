@@ -1,0 +1,27 @@
+name: Bug report
+description: A page is not highlighted, or highlighted wrong
+labels: [bug]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: SuperPSX page
+      placeholder: https://www.superpsx.com/...
+    validations:
+      required: true
+  - type: input
+    id: title_id
+    attributes:
+      label: Title ID shown on the page
+      placeholder: CUSA00900
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what you expected
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Extension and Chrome version
+      placeholder: 1.0.1, Chrome 131
